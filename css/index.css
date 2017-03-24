@@ -1,0 +1,77 @@
+
+@import url('https://fonts.googleapis.com/css?family=Montserrat:400,300');
+
+.CodeMirror{
+  resize: none;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+}
+
+/** Login Styling. */
+#area__login{
+  height: 100%;
+  width: 100%;
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  background-color: rgba(0,0,0,0.1);
+  z-index: 100;
+}
+  .center__loginWrap{
+    height: 400px;
+    width: 300px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: -200px;
+    margin-left: -150px;
+    text-align: center;
+  }
+    .login__header{
+      font-family: Raleway;
+      font-size: 50px;
+      color: #FFF;
+      font-weight: 300;
+      margin-bottom: 30px;
+      text-align: left;
+    }
+    .login__input{
+      padding: 12.5px 15px;
+      font-family: Montserrat;
+      background-color: rgba(255,255,255,0.1);
+      letter-spacing: 0.7px;
+      font-weight: 400;
+      font-size: 12px;
+      border: 0;
+      color: #FFF;
+      width: 90%;
+      box-sizing: border-box;
+      margin-top: 20px;
+      outline: 0;
+      text-align: center;
+    }
+    .submit__button{
+      font-family: Montserrat;
+      font-size: 12px;
+      padding: 12.5px 20px;
+      text-transform: uppercase;
+      margin: auto;
+      margin-top: 50px;
+      width: 100px;
+      border: 2px solid #BE90D4;
+      background-color: transparent;
+      color: #BE90D4;
+      letter-spacing: 1px;
+      transition: background-color .1s;
+      outline: 0;
+      border-radius: 2px;
+    }
+    .submit__button:hover{
+      background-color: #BE90D4;
+      color: #FFF;
+      cursor: pointer;
+      transition: background-color .1s;
+    }
