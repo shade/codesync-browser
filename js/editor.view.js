@@ -10,12 +10,62 @@ var View = new Vue({
     errorMsg: "",
     loading: false,
     connecting: false,
-    token: localStorage['TOKEN']
+    token: localStorage['TOKEN'],
+    users: {
+      me: document.getElementById('me__loading')
+      others: []
+    }
   },
   methods: {
-    submit: LoginBox__submit
+    submit: LoginBox__submit,
+
+    showTo: Loading__showTo,
+    showFrom: Loading__showFrom,
+    addUser: Loading__addUser
   }
 })
+
+
+// All the methods for the Loading Screen.
+// Namespaced swith `Loading__`
+
+
+// Function to show data was sent to a user.
+function Loading__showTo (user) {
+  var others = this.users.others
+  var found = null
+
+  // Find this user's object
+  for(var i = 0, ii = others.length; i < ii; i++) {
+    if (others[i].name == user) {
+      found = others[i]
+      break
+    }
+  }
+
+  // Make it look like he's getting something.
+  found.recieved = true
+  // Get rid of it half a second later.
+  setTimeout(() => {
+    found.recieved = false
+  },500)
+}
+
+// Function to show data was sent from a user.
+function Loading__showFrom (user) {
+
+}
+
+// Function to add a user to everything
+function Loading__addUser (user) {
+  this.users.others.push({
+    name: user,
+    sent: false,
+    recieved: false
+  })
+}
+
+
 
 
 // The methods for the login box. 
@@ -66,3 +116,5 @@ function LoginBox__submit() {
     self.errorMsg = "Couldn't connect to the server... :("
   })
 }
+
+

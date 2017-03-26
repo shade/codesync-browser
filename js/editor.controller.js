@@ -28,12 +28,25 @@ Controller.prototype._addSocketListeners = () => {
     userArr.forEach(user => {
       var peer = App.Model.createPeer(user)
       self._addPeerListeners(peer)
+
+      // Show these peers on the view.
+      App.View.showPeer(user)
     })
+
   })
 
   // If the peer exists, msg him
   // Otherwise, add him as a new user.
   App.Model.onSocket('msg', data => {
-    
+    // Try to extract a json array from this.
+    try {
+      var msg = JSON.parse(data)
+    } catch (e) {
+      console.warn('The Socket Server sent some invalid json with msg')
+      console.warn(data)
+      return
+    }
+
+    App.View.showFrom(msg.from)
   })
 }
