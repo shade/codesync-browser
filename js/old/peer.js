@@ -5,10 +5,6 @@ var config = {
   }]
 }
 
-function log(data) {
-  console.log(data)
-}
-
 /**
  * The Peer function, used to create peer obejcts.
  * @param {String} id - This is the id of the person given by the server.
@@ -20,6 +16,7 @@ function Peer (id) {
   // Create the instance params.
   this.peer = new RTCPeerConnection(config)  
   this.id = id
+  this.channel = null
 
   // Runs when we get an ice candidate. Then sends it.
   this.peer.onicecandidate = (event) => {
@@ -31,6 +28,12 @@ function Peer (id) {
   this.peer.onnegotiationneeded = () => {
     // Create the offer and send it on callback.
     self.make('offer')
+  }
+
+  // Also, make sure if the other person makes a datachannel use it.
+  this.peer.ondatachannel = (event) => {
+    self.channel = event.channel
+    self.addChannelListeners(self.channel)
   }
 }
 
@@ -124,7 +127,7 @@ Peer.prototype.handle = function (data) {
     var descro = new RTCSessionDescription(data.data)
     // Add this as the Remote Description.
     this.peer.setRemoteDescription(descro, () => {
-
+      
       // Give out an answer, if this is an sdp offer.
       if (self.remoteDescription.type == 'offer') {
         self.make('answer')
@@ -147,3 +150,21 @@ Peer.prototype.channelify = function () {
   })
 
 }
+
+
+
+
+Peer.prototype.addChannelListeners = function (channel) {
+  var self = this
+  
+  channel.onmessage = function (event) {
+
+  }
+  channel.onopen = function (event) {
+
+  }
+  channel.onclose = function (event) {
+    
+  }
+}
+

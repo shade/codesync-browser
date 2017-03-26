@@ -5,28 +5,31 @@ html
     link(rel="stylesheet" href="/css/index.css")
     style.
       @import url('https://fonts.googleapis.com/css?family=Space+Mono:400,700')
+    script.
+        const URL = '138.197.153.174'
   body
-    #area__login
-      .center__loginWrap
-        .login__header Login
-        input(placeholder="username").login__input
-        br
-        input(placeholder="password" type="password").login__input
-        button.submit__button Submit
+    div#area__loading
+
+    div#area__login(v-show="!token")
+      div.center__loginWrap
+        form(v-on:submit.prevent="submit")
+          div.login__header Login
+          div.login__error(v-show="errorMsg") {{errorMsg}}
+          input(placeholder="username" v-model="username").login__input
+          br
+          input(placeholder="password" v-model="password" type="password").login__input
+          button.submit__button(type="submit") {{loading?'':'Submit'}}
+            img(src="/img/ajax.gif" height="20px" v-show="loading")
+    div#header CodeBeem Browser
+    div#area__file
     textarea#editor
     script(src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/codemirror.min.js")
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/mode/javascript/javascript.js")
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.2.5/vue.min.js")
+      
+    script(src="/js/editor.view.js")
+    script(src="/js/editor.controller.js")
+    script(src="/js/editor.model.js")
+    script(src="/js/editor.main.js")
     script(src="/js/index.js")
-    script(src="/js/binary.js")
-
-
-
-
-
-
-
-
-
-
-
-
-
+    script(src="/libs/peer.js")
