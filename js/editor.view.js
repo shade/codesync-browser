@@ -2,7 +2,9 @@
  * Create the View for the Vue thing.
  */
 
-var View = new Vue({
+var View = {}
+
+View.Login = new Vue({
   el: '#area__login',
   data: {
     username: "",
@@ -10,61 +12,13 @@ var View = new Vue({
     errorMsg: "",
     loading: false,
     connecting: false,
-    token: localStorage['TOKEN'],
-    users: {
-      me: document.getElementById('me__loading')
-      others: []
-    }
+    token: ''
   },
   methods: {
+    // Methods for login.
     submit: LoginBox__submit,
-
-    showTo: Loading__showTo,
-    showFrom: Loading__showFrom,
-    addUser: Loading__addUser
   }
 })
-
-
-// All the methods for the Loading Screen.
-// Namespaced swith `Loading__`
-
-
-// Function to show data was sent to a user.
-function Loading__showTo (user) {
-  var others = this.users.others
-  var found = null
-
-  // Find this user's object
-  for(var i = 0, ii = others.length; i < ii; i++) {
-    if (others[i].name == user) {
-      found = others[i]
-      break
-    }
-  }
-
-  // Make it look like he's getting something.
-  found.recieved = true
-  // Get rid of it half a second later.
-  setTimeout(() => {
-    found.recieved = false
-  },500)
-}
-
-// Function to show data was sent from a user.
-function Loading__showFrom (user) {
-
-}
-
-// Function to add a user to everything
-function Loading__addUser (user) {
-  this.users.others.push({
-    name: user,
-    sent: false,
-    recieved: false
-  })
-}
-
 
 
 
@@ -105,10 +59,12 @@ function LoginBox__submit() {
     }
 
     // If there's a token, set it.
+    // Hide this screen.
     // Also, start everything.
     if (json.token) {
+      View.Loading.enabled = true
       self.token = json.token
-      start(json.token)
+      App.Model.connectSocket(json.token)
     }
   },
   (data) => {
@@ -118,3 +74,100 @@ function LoginBox__submit() {
 }
 
 
+
+
+
+
+
+
+
+
+
+
+View.Loading = new Vue({
+  el: '#area__loading',
+  data: {
+    enabled: false,
+    space: "",
+    connecting: false,
+    loading: false,
+    me: document.getElementById('me__loading'),
+    others: []
+  },
+  methods: {
+    // Methods for loading.
+    showTo: Loading__showTo,
+    showFrom: Loading__showFrom,
+    addUser: Loading__addUser,
+
+    // Methods for Space stuff.
+    submit: Loading__submitSpace
+  }
+})
+
+
+// All the methods for the Loading Screen.
+// Namespaced swith `Loading__`
+
+
+// Function to show data was sent to a user.
+function Loading__showTo (user) {
+  var others = this.others
+  var found = null
+
+  // Find this user's object
+  for(var i = 0, ii = others.length; i < ii; i++) {
+    if (others[i].name == user) {
+      found = others[i]
+      break
+    }
+  }
+
+  // Make it look like he's getting something.
+  found.sent = true
+  // Get rid of it half a second later.
+  setTimeout(() => {
+    found.sent = false
+  },500)
+}
+
+// Function to show data was sent from a user.
+function Loading__showFrom (user) {
+  var others = this.others
+  var found = null
+
+  // Find this user's object
+  for(var i = 0, ii = others.length; i < ii; i++) {
+    if (others[i].name == user) {
+      found = others[i]
+      break
+    }
+  }
+
+  // Make it look like he's getting something.
+  found.recieved = true
+  // Get rid of it half a second later.
+  setTimeout(() => {
+    found.recieved = false
+  },500)
+
+}
+
+// Function to add a user to everything
+function Loading__addUser (user) {
+  this.others.push({
+    name: user,
+    sent: false,
+    recieved: false
+  })
+}
+
+
+// Function to submit the space.
+function Loading__submitSpace () {
+  App.Model.sendSocket('list',{
+    space: this.space
+  })
+
+  this.connecting = true
+}

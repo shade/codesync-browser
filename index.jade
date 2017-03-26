@@ -9,9 +9,16 @@ html
     script(src="/js/libs/ajax.js")
     script.
         const URL = '138.197.153.174'
-  body
-    div#area__loading
-
+  body#area__all
+    div#area__loading(v-show="enabled")
+      div.loading__box
+        div.loading__circle(v-for="user in others" v-bind:class="{'loading__circle--connected': user.done, 'loading__circle--ping': user.sent, 'loading__circle--pong': user.recieved}") 
+      div.space__box(v-show="!connecting")
+        form(v-on:submit.prevent="submit")
+          div.space__header Space
+          input(placeholder="Enter your space. i.e. codesync-server" v-model="space").space__input
+          button.submit__button(type="submit") {{loading?'':'Submit'}}
+            img(src="/img/ajax.gif" height="20px" v-show="loading")
     div#area__login(v-show="!token")
       div.center__loginWrap
         form(v-on:submit.prevent="submit")
@@ -33,4 +40,3 @@ html
     script(src="/js/editor.controller.js")
     script(src="/js/editor.model.js")
     script(src="/js/editor.main.js")
-    script(src="/js/index.js")

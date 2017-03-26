@@ -121,3 +121,105 @@ body {
   right: 0px;
   background-color: #222;
 }
+
+/** Styling for the Loading Box */
+#area__loading{
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  background-color:   background-color: rgba(0,0,0,0.2);
+  z-index: 1000;
+}
+
+  .loading__box{
+    height: 300px;
+    width: 300px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: -150px;
+    margin-left: -150px;
+    text-align: center;
+  }
+    .loading__circle{
+      height: 50px;
+      width: 50px;
+      border-radius: 40px;
+      background-color: #000;
+      margin: 10px;
+      display: inline-block;
+    }
+      #me__loading{
+        border: 4px solid #FFF;
+        box-sizing: border-box;
+      }
+      .loading__circle--connected{
+        background-color: #FFF;
+      }
+      .loading__circle--ping{
+        animation: ping 0.5s normal forwards ease-in-out;
+      }
+      .loading__circle--pong{
+        animation: pong 0.5s normal forwards ease-in-out;
+      }
+
+@keyframes ping {
+    from {        
+      box-shadow: 0px 0px 0px #52B3D9;
+    }
+    50% {
+      box-shadow: 0px 0px 10px #52B3D9;
+    }
+    to {       
+      box-shadow: 0px 0px 0px #52B3D9;
+    }
+}
+@keyframes pong {
+    from {        
+      box-shadow: 0px 0px 0px #2ECC71;
+    }
+    50% {
+      box-shadow: 0px 0px 10px #2ECC71;
+    }
+    to {       
+      box-shadow: 0px 0px 0px #2ECC71;
+    }
+}
+
+/** Styling for the space stuff... */
+.space__box{
+  height: 400px;
+  width: 300px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: -200px;
+  margin-left: -150px;
+  text-align: center;
+}
+  .space__header{
+    font-family: Raleway;
+    font-size: 40px;
+    color: #FFF;
+    font-weight: 300;
+    margin-bottom: 30px;
+    text-align: left;
+  }
+  .space__input{
+      padding: 12.5px 15px;
+      font-family: Montserrat;
+      background-color: rgba(255,255,255,0.1);
+      letter-spacing: 0.7px;
+      font-weight: 400;
+      font-size: 12px;
+      border: 0;
+      color: #FFF;
+      width: 90%;
+      box-sizing: border-box;
+      margin-top: 20px;
+      outline: 0;
+      text-align: center;
+      border-radius: 3px;
+  }

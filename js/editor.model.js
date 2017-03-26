@@ -6,6 +6,9 @@ function Model () {
   this.peerList = {}
 }
 
+Model.prototype.sendSocket = function (event, data) {
+  this._socket.send(event + WEBSOCKET_DELIMETER + JSON.stringify(data))
+}
 
 Model.prototype.connectSocket = function (token) {
   // Create and add the socket.
@@ -33,10 +36,37 @@ Model.prototype.onSocket = function (event, callback) {
 Model.prototype.createPeer = function (userId, newUser) {
   var peer = new Peer(userId, newUser)
   this.peerList[userId] = peer
+
+  // Add the listeners to the peer.
+  this.__addPeerListeners(peer)
+  return peer
 }
 
 
 /** Private Methods */
+
+Model.prototype._handleSDP = function (data) {
+  var peer
+
+  // If this person exists, assign him to peer
+  if ((peer = this.peerList[data.from])) {
+    // Since he exists, give him the sdp data.
+    peer.handle(data)
+  } else {
+    // This person doesn't exist yet, so let's make him.
+    var peer = this.createPeer(data.from)
+    // Now, give him the data.
+    peer.handle(data)
+    // Let's add this user to the view.
+    App.View.Loading.addUser(data.from)
+  }
+
+  // Wait for the stack to clear then show that we got some data from him.
+  setTimeout(() => {
+    App.View.Loading.showFrom(data.from)
+  },0)
+}
+
 
 /**
  * Configures the socket method that's built into the WebSocket API
@@ -49,12 +79,12 @@ Model.prototype.__configSocket = function () {
     var dataArr = event.data.split(WEBSOCKET_DELIMETER)
 
     // If there isn't 2 halves to the data, error it.
-    if (dataArr.length != 2) {
+    if (dataArr.length == 2) {
       // Find the event listeners
-      var clalbacks = self._socketEvents[dataArr[0]]
+      var callbacks = self._socketEvents[dataArr[0]] || []
 
       // Go through the callbacks and execute them with the data.
-      for (var i = 0, ii = callbacks.length; i < ii; i++) {
+      for (var i = 0, ii = callbacks.length ; i < ii; i++) {
         callbacks[i](dataArr[1])
       }
     } else {
@@ -69,4 +99,18 @@ Model.prototype.__configSocket = function () {
     //  - Add a reconnection thing
     //  - Add user feedback.
   }
+}
+
+
+Model.prototype.__addPeerListeners = function (peer) {
+  var self = this
+
+  // Get the connection data.
+  peer.on('ice|sdp',(data) => {
+    // Send the connection data.
+    self.sendSocket('send',{
+      to: peer.userId,
+      data: data
+    })
+  })
 }

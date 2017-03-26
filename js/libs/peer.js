@@ -25,8 +25,6 @@ function Peer (userId, newUser) {
   newUser || this.make('offer')
 }
 
-
-
 /**
  * Handle any kind of signaling data sent to the peer. 
  * @param  {Any, usually String} the sdp/ice information. 
@@ -34,32 +32,29 @@ function Peer (userId, newUser) {
 Peer.prototype.handle = function (data) {
   // This is this!
   var self = this
+  console.log('DATA PASSED TO PEER',data)
 
   // Try parsing the json.
-  try {
-    var {from, data} = JSON.parse(data)
-  } catch (e) {
-    console.warn('The Socket spat out some invalid JSON')
-    console.warn(data)
-  }
+  data = data.data
+  if (!data) return
 
   // Now actually deal with the stuff.
-  if (data.type == 'sdp') {
+  if (data.sdp) {
 
     // Create the remote description using the sdp.
-    var descro = new RTCSessionDescription(data.data)
+    var descro = new RTCSessionDescription(data)
     // Add this as the Remote Description.
     this._peer.setRemoteDescription(descro, () => {
       
       // Give out an answer, if this is an sdp offer.
-      if (self.remoteDescription.type == 'offer') {
+      if (self._peer.remoteDescription.type == 'offer') {
         self.make('answer')
       }
     })
   }
   else {
     // Add this as the ice candidate.
-    this._peer.addIceCandidate(new RTCIceCandidate(data.data))
+    this._peer.addIceCandidate(new RTCIceCandidate(data))
   }
 }
 
@@ -116,7 +111,7 @@ Peer.prototype.make = function (type) {
  */
 Peer.prototype.send = function (type, data) {
   // Go through the event callbacks for the data.
-  var evs = this._events
+  var evs = this._events[type] || []
   for (var i = 0, ii = evs.length; i < ii; i++) {
     // Execute the callback with the data.
     evs[i](data)
@@ -159,9 +154,9 @@ Peer.prototype.on = function (events, callback) {
     // If the event list exists, just push it. 
     // Otherwise, create it.
     if (eventList) {
-      this._events[event] = [callback]
-    } else {
       eventList.push(callback)
+    } else {
+      this._events[event] = [callback]
     }
   })
 }

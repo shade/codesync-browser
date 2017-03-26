@@ -5,7 +5,6 @@ function Controller() {
 
 
 /** Private Methods */
-
 Controller.prototype._addSocketListeners = () => {
   var self = this
 
@@ -27,10 +26,9 @@ Controller.prototype._addSocketListeners = () => {
     // Go through each user, and create a peer for him.
     userArr.forEach(user => {
       var peer = App.Model.createPeer(user)
-      self._addPeerListeners(peer)
-
+      
       // Show these peers on the view.
-      App.View.showPeer(user)
+      App.View.Loading.addUser(user)
     })
 
   })
@@ -47,6 +45,6 @@ Controller.prototype._addSocketListeners = () => {
       return
     }
 
-    App.View.showFrom(msg.from)
+    App.Model._handleSDP(msg)
   })
 }

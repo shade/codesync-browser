@@ -10,3 +10,8 @@ var App = {
   Controller: new Controller(),
   View: View
 }
+
+// For Testing. REMOVE LATER.
+if (View.Login.token) {
+  App.Model.connectSocket(View.Login.token)
+}
