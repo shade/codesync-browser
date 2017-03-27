@@ -1,6 +1,9 @@
 
+// Heartbeat interval
+const HEARTBEAT_INTERVAL = 500
+
 // Create a configuration for ice servers. This is constant.
-var CONFIG = {
+const CONFIG = {
   'iceServers': [{
     'url': 'stun:stun.l.google.com:19302'
   }]
@@ -18,6 +21,8 @@ function Peer (userId, newUser) {
 
   // Private vars.
   this._events = {}
+  this._channelEvents = {}
+
   this._peer = new RTCPeerConnection(CONFIG)
   this._channel = null
   this.created = Date.now()
@@ -60,6 +65,7 @@ Peer.prototype.handle = function (data) {
         // Since we're recieving an offer, this means that this is not a new user. 
         // We also have to make a datachannel here, as we can only do that after we set our remote description.
         self._channel = self._peer.createDataChannel('dc')
+        self._listenChannel(self._channel)
       }
     })
   }
@@ -180,7 +186,31 @@ Peer.prototype.on = function (events, callback) {
 
 
 Peer.prototype._listenChannel = function (channel) {
+  var self = this
+
+  // When this opens, hide the loading screen.
   channel.onopen = () => {
-    console.log(`Connection took ${Date.now() - this.created}ms`)
+    console.log(`Connection took ${Date.now() - self.created}ms`)
+    //App.View.Loading.hide()// Send heartbeats.
+    setInterval(() => {
+      channel.send('H')
+    },HEARTBEAT_INTERVAL)
+  }
+
+  channel.onmessage = (event) => {
+    // Get the current time.
+    var now = performance.now()
+
+    // Grab the data.
+    var data = event.data
+    // If it's a heart beat, record the current time, high accuracy.
+    if (data[0] == 'H') {
+      console.log(`Latency = ${(now - self.lastBeat)}ms`)
+      self.lastBeat = now
+    }
+  }
+
+  channel.onerror = () => {
+    console.log('eeror')
   }
 }
