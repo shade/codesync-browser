@@ -13,16 +13,23 @@ var CONFIG = {
  * @param {Boolean} newUser - True if this is a user that you don't have to offer.
  */
 function Peer (userId, newUser) {
+  var self = this
   this.userId = userId
 
   // Private vars.
   this._events = {}
   this._peer = new RTCPeerConnection(CONFIG)
+  this._channel = null
+  this.created = Date.now()
 
   // Set up the listeners for the peer.
   this.listen()
-  // If this is not a new user, signal an offer.
-  newUser || this.make('offer')
+  // If this is not a new user:
+  //  - signal an offer.
+  //  - make a datachannel. (done in handle.)
+  if (!newUser) {
+    this.make('offer')
+  }
 }
 
 /**
@@ -49,6 +56,10 @@ Peer.prototype.handle = function (data) {
       // Give out an answer, if this is an sdp offer.
       if (self._peer.remoteDescription.type == 'offer') {
         self.make('answer')
+        
+        // Since we're recieving an offer, this means that this is not a new user. 
+        // We also have to make a datachannel here, as we can only do that after we set our remote description.
+        self._channel = self._peer.createDataChannel('dc')
       }
     })
   }
@@ -135,6 +146,12 @@ Peer.prototype.listen = function () {
     // Create the offer and send it on callback.
     self.make('offer')
   }
+
+  // If someone signals a datachannel, catch it.
+  this._peer.ondatachannel = (event) => {
+    self._channel = event.channel
+    self._listenChannel(self._channel)
+  }
 }
 
 /**
@@ -159,4 +176,11 @@ Peer.prototype.on = function (events, callback) {
       this._events[event] = [callback]
     }
   })
+}
+
+
+Peer.prototype._listenChannel = function (channel) {
+  channel.onopen = () => {
+    console.log(`Connection took ${Date.now() - this.created}ms`)
+  }
 }

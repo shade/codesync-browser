@@ -7,6 +7,14 @@ function Model () {
 }
 
 Model.prototype.sendSocket = function (event, data) {
+  // If this is a send, show it on the view.
+  if(event == 'send') {
+    // Stack clearing again.
+    setTimeout(() => {
+      App.View.Loading.showTo(data.to)
+    }, 0)
+  }
+
   this._socket.send(event + WEBSOCKET_DELIMETER + JSON.stringify(data))
 }
 
