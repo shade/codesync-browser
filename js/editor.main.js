@@ -15,3 +15,4 @@ var App = {
 if (View.Login.token) {
   App.Model.connectSocket(View.Login.token)
 }
+

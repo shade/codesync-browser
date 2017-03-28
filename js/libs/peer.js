@@ -191,11 +191,12 @@ Peer.prototype._listenChannel = function (channel) {
 
   // When this opens, hide the loading screen.
   channel.onopen = () => {
+    View.Loading.enabled = false
     console.log(`Connection took ${Date.now() - self.created}ms`)
     //App.View.Loading.hide()// Send heartbeats.
     if (!self._heartbeat) {
       self._heartbeat = setInterval(() => {
-        channel.send('H')
+        //channel.send('H')
       },HEARTBEAT_INTERVAL)
     }
   }
@@ -211,11 +212,11 @@ Peer.prototype._listenChannel = function (channel) {
       console.log(`Latency = ${(now - self.lastBeat)/(2 * HEARTBEAT_INTERVAL)}ms`)
       self.lastBeat = now
     }
-
     // If there's a list of callbacks for an event, grab it.
     var evs
     if (evs = self._channelEvents[data[0]]) {
       var dat = data.substr(1)
+      console.log(evs)
       // Iterate through all the callbacks and call em.
       for(var i = 0, ii = evs.length; i < ii; i++) {
         // Call em with the extra data
@@ -231,5 +232,10 @@ Peer.prototype._listenChannel = function (channel) {
 
 // Adds the listeners to the 
 Peer.prototype.onData = function (event, callback) {
-
+  
+  // I know the drill.
+  if (this._channelEvents[event])
+    this._channelEvents[event].push(callback)
+  else
+    this._channelEvents[event] = [callback]
 }

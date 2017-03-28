@@ -171,3 +171,98 @@ function Loading__submitSpace () {
 
   this.connecting = true
 }
+
+
+
+
+
+
+
+
+
+
+// HEART BEAT PACKET STRUCTURE 
+// 
+
+
+
+// CURSOR PACKET STRUCTURE
+// 1 Byte 'C'
+// 3 Bytes - line
+// 3 Bytes - ch
+
+// MESSAGE PACKET STRUCTURE
+
+// 1 Byte 'M'
+// 3 Bytes - from.line
+// 3 Bytes - from.ch
+// 3 Bytes - to.line
+// 3 Bytes - to.ch
+// \0
+// \0
+// TEXT:
+// String
+// \0
+// String
+// \0
+// String
+// \0
+// String
+// \0
+// \0
+// REMOVED:
+// String
+// \0
+// String
+// \0
+// String
+// \0
+// String
+
+
+
+function Editor () {
+  // Create an editor.
+  this._editorElement = document.getElementById("editor")
+  
+  this._editor = CodeMirror.fromTextArea(this._editorElement, {
+    lineNumbers: true,
+    mode: "htmlmixed",
+    theme: "base16-dark"
+  })
+
+  // Some private vars
+  this._cursors = {}
+
+  // Add Listeners to our editor.
+  this._addEditorListeners()
+}
+
+
+Editor.prototype._addEditorListeners = function () {
+  var self = this
+  var justChanged = false
+  this._editor.on('change', function (e,obj){
+    justChanged = true
+    // Implement this later!
+  })
+  this._editor.on('cursorActivity', function () {
+    // Incomment here when you implement above.    
+    //if (justChanged) return (justChanged = false)
+
+    // Grab the position.
+    var pos = self._editor.getCursor()
+    App.Controller.sendCursor(pos.line, pos.ch)
+  }) 
+}
+
+Editor.prototype.updateCursor = function (user, line, ch) {
+  var old = this._cursors[user]
+
+  // clear the old cursor
+  old && old.clear()
+  // update the new one.
+  this._cursors[user] =   this._editor.markText({line: line, ch: ch},{line: line, ch: ch+1},{className: 'mark'})
+}
+
+View.Editor = new Editor()

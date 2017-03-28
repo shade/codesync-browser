@@ -47,9 +47,20 @@ Model.prototype.createPeer = function (userId, newUser) {
 
   // Add the listeners to the peer.
   this.__addPeerListeners(peer)
+  // Add channel listeners to the peer.
+  App.Controller._addPeerListeners(peer)
   return peer
 }
 
+Model.prototype.broadcast = function (data) {
+  // Iterate through all the peers and send this to their datachannel. If Open.
+  for (var name in this.peerList) {
+    var peer = this.peerList[name]
+    if (peer._channel.readyState == 'open') {
+      peer._channel.send(data)
+    }
+  }
+}
 
 /** Private Methods */
 
