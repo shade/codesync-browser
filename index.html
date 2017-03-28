@@ -1,0 +1,46 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/theme/base16-dark.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/codemirror.css"/>
+    <link rel="stylesheet" href="css/index.css"/>
+    <style>@import url('https://fonts.googleapis.com/css?family=Space+Mono:400,700')</style>
+    <script src="js/libs/peer.js"></script>
+    <script src="js/libs/ajax.js"></script>
+    <script>const URL = '138.197.153.174'</script>
+  </head>
+  <body id="area__all">
+    <div id="area__loading" v-show="enabled">
+      <div class="loading__box">
+        <div v-for="user in others" v-bind:class="{'loading__circle--connected': user.done, 'loading__circle--ping': user.sent, 'loading__circle--pong': user.recieved}" class="loading__circle"> </div>
+      </div>
+      <div v-show="!connecting" class="space__box">
+        <form v-on:submit.prevent="submit">
+          <div class="space__header">Space</div>
+          <input placeholder="Enter your space. i.e. codesync-server" v-model="space" class="space__input"/>
+          <button type="submit" class="submit__button">{{loading?'':'Submit'}}<img src="/img/ajax.gif" height="20px" v-show="loading"/></button>
+        </form>
+      </div>
+    </div>
+    <div id="area__login" v-show="!token">
+      <div class="center__loginWrap">
+        <form v-on:submit.prevent="submit">
+          <div class="login__header">Login</div>
+          <div v-show="errorMsg" class="login__error">{{errorMsg}}</div>
+          <input placeholder="username" v-model="username" class="login__input"/><br/>
+          <input placeholder="password" v-model="password" type="password" class="login__input"/>
+          <button type="submit" class="submit__button">{{loading?'':'Submit'}}<img src="/img/ajax.gif" height="20px" v-show="loading"/></button>
+        </form>
+      </div>
+    </div>
+    <div id="header">CodeBeem Browser</div>
+    <div id="area__file"></div>
+    <textarea id="editor"></textarea>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/mode/javascript/javascript.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.2.5/vue.min.js"></script>
+    <script src="js/editor.view.js"></script>
+    <script src="js/editor.controller.js"></script>
+    <script src="js/editor.model.js"></script>
+    <script src="js/editor.main.js"></script>
+  </body>
+</html>
