@@ -216,7 +216,6 @@ Peer.prototype._listenChannel = function (channel) {
     var evs
     if (evs = self._channelEvents[data[0]]) {
       var dat = data.substr(1)
-      console.log(evs)
       // Iterate through all the callbacks and call em.
       for(var i = 0, ii = evs.length; i < ii; i++) {
         // Call em with the extra data

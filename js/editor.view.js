@@ -208,16 +208,6 @@ function Loading__submitSpace () {
 // String
 // \0
 // String
-// \0
-// \0
-// REMOVED:
-// String
-// \0
-// String
-// \0
-// String
-// \0
-// String
 
 
 
@@ -242,13 +232,21 @@ function Editor () {
 Editor.prototype._addEditorListeners = function () {
   var self = this
   var justChanged = false
+
   this._editor.on('change', function (e,obj){
     justChanged = true
-    // Implement this later!
+    // Ignore if replaceRange fires this.
+    if(!obj.origin) {
+      return
+    }
+    // Send necessary data to the controller.
+    App.Controller.sendMsg(obj.from, obj.to, obj.text)
   })
+
+
   this._editor.on('cursorActivity', function () {
     // Incomment here when you implement above.    
-    //if (justChanged) return (justChanged = false)
+    if (justChanged) return (justChanged = false)
 
     // Grab the position.
     var pos = self._editor.getCursor()
@@ -263,6 +261,10 @@ Editor.prototype.updateCursor = function (user, line, ch) {
   old && old.clear()
   // update the new one.
   this._cursors[user] =   this._editor.markText({line: line, ch: ch},{line: line, ch: ch+1},{className: 'mark'})
+}
+
+Editor.prototype.addText = function (fLine, fCh, tLine, tCh, lines) {
+  this._editor.replaceRange(lines.join('\n'), {line: fLine, ch: fCh},{line: tLine, ch: tCh})
 }
 
 View.Editor = new Editor()

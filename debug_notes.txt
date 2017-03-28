@@ -1,0 +1,4 @@
+- Something going weird on 3 people with Controller peer listeners
+- debug cursor on end of line.
+
+- Find out why server crashes occasionally
