@@ -236,6 +236,7 @@ Editor.prototype._addEditorListeners = function () {
   this._editor.on('change', function (e,obj){
     justChanged = true
     // Ignore if replaceRange fires this.
+    console.log(obj, obj.origin)
     if(!obj.origin) {
       return
     }

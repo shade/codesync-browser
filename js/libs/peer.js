@@ -207,8 +207,7 @@ Peer.prototype._listenChannel = function (channel) {
 
     // Grab the data.
     var data = event.data
-    console.log(data)
-    
+
     // If it's a heart beat, record the current time, high accuracy.
     if (data[0] == 'H') {
       console.log(`Latency = ${(now - self.lastBeat)/(2 * HEARTBEAT_INTERVAL)}ms`)
