@@ -57,6 +57,7 @@ Model.prototype.broadcast = function (data) {
   for (var name in this.peerList) {
     var peer = this.peerList[name]
     if (peer._channel.readyState == 'open') {
+      console.log(name)
       peer._channel.send(data)
     }
   }
@@ -96,6 +97,7 @@ Model.prototype.__configSocket = function () {
 
   socket.onmessage = (event) => {
     var dataArr = event.data.split(WEBSOCKET_DELIMETER)
+    console.log(dataArr)
 
     // If there isn't 2 halves to the data, error it.
     if (dataArr.length == 2) {

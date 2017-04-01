@@ -24,6 +24,7 @@ Controller.prototype.sendCursor = (line, ch) => {
 }
 
 Controller.prototype.sendMsg  = (from, to, text) => {
+  console.log(from, to, text)
   // Convert the nums to string.
   // Init the necessary vars.
   var line = from.line
@@ -133,7 +134,6 @@ Controller.prototype._addPeerListeners = (peer) => {
 
   // MESSAGE: 'M'
   peer.onData('M', packet => {
-
     // The parts are as follows.
     // PART 1: to from info
     // PART 2: Added lines
