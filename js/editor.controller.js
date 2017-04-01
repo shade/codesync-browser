@@ -1,5 +1,5 @@
 const BYTE_MASK = 255 // Same as 0b1111 1111
-const BLOCK_WORD_DELIMETER = String.fromCharCode(0x1d).repeat(5)
+const BLOCK_WORD_DELIMETER = String.fromCharCode(0x1d).repeat(3)
 
 function Controller() {
 
@@ -84,13 +84,15 @@ Controller.prototype._addSocketListeners = () => {
     }
 
     // Go through each user, and create a peer for him.
-    userArr.forEach(user => {
+    for (var i = 0, ii = userArr.length; i < ii; i++){
+      var user = userArr[i]
       var peer = App.Model.createPeer(user)
       
       // Show these peers on the view.
       App.View.Loading.addUser(user)
+      console.log(self)
       self._addPeerListeners(peer)
-    })
+    }
 
   })
 

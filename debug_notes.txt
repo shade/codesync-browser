@@ -2,3 +2,5 @@
 - debug cursor on end of line.
 
 - Find out why server crashes occasionally
+- Handle disconnection of peer datachannel.
+  (Perhaps Retry and then disconnect if server said died.)
