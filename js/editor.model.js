@@ -97,7 +97,6 @@ Model.prototype.__configSocket = function () {
 
   socket.onmessage = (event) => {
     var dataArr = event.data.split(WEBSOCKET_DELIMETER)
-    console.log(dataArr)
 
     // If there isn't 2 halves to the data, error it.
     if (dataArr.length == 2) {
